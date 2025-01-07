@@ -18,10 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Set flag to use /dev/gpiomem instead of /dev/mem */
+#define USE_DEV_GPIOMEM
 
 /* GPIO registers address */
-#define BCM2708_PERI_BASE  0x20000000
-#define GPIO_BASE          (BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
 #define BLOCK_SIZE         (256)
 #define PORTOFFSET         0
 

@@ -1,0 +1,4 @@
+picberry PIC Programmer v0.2
+Device Name: DSPIC33FJ128GP204
+Device ID: 0x00000627
+Writing chip...DONE! 

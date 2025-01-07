@@ -129,41 +129,61 @@ int main(int argc, char *argv[])
 /* Set up a memory regions to access GPIO */
 void setup_io(void)
 {
-        /* open /dev/mem */
-        mem_fd = open("/dev/mem", O_RDWR|O_SYNC);
-        if (mem_fd == -1) {
-                perror("Cannot open /dev/mem");
-                exit(1);
-        }
+#ifdef USE_DEV_GPIOMEM
+    /* open /dev/gpiomem */
+    mem_fd = open("/dev/gpiomem", O_RDWR|O_SYNC);
+    if (mem_fd == -1) {
+            perror("Cannot open /dev/gpiomem");
+            exit(1);
+    }
 
-        /* mmap GPIO */
-        gpio_map = mmap(0, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, mem_fd, GPIO_BASE);
-        if (gpio_map == MAP_FAILED) {
-                perror("mmap() failed");
-                exit(1);
-        }
+    /* mmap GPIO */
+    gpio_map = mmap(0, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, mem_fd, 0);
+    if (gpio_map == MAP_FAILED) {
+            perror("mmap() failed");
+            exit(1);
+    }
+#else
+    /* open /dev/mem */
+    mem_fd = open("/dev/mem", O_RDWR|O_SYNC);
+    if (mem_fd == -1) {
+            perror("Cannot open /dev/mem");
+            exit(1);
+    }
 
-        /* Always use volatile pointer! */
-        gpio = (volatile uint32_t *) gpio_map;
+    /* mmap GPIO */
+    gpio_map = mmap(0, BLOCK_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, mem_fd, GPIO_BASE);
+    if (gpio_map == MAP_FAILED) {
+            perror("mmap() failed");
+            exit(1);
+    }
+#endif
+
+    /* Always use volatile pointer! */
+    gpio = (volatile uint32_t *) gpio_map;
 
 }
 
 /* Release GPIO memory region */
 void close_io(void)
 {
-        int ret;
+    int ret;
 
-        /* munmap GPIO */
-        ret = munmap(gpio_map, BLOCK_SIZE);
-        if (ret == -1) {
-            perror("munmap() failed");
-            exit(1);
-        }
+    /* munmap GPIO */
+    ret = munmap(gpio_map, BLOCK_SIZE);
+    if (ret == -1) {
+        perror("munmap() failed");
+        exit(1);
+    }
 
-        /* close /dev/mem */
-        ret = close(mem_fd);
-        if (ret == -1) {
-            perror("Cannot close /dev/mem");
-            exit(1);
-        }
+    /* close /dev/gpiomem or /dev/mem */
+    ret = close(mem_fd);
+    if (ret == -1) {
+#ifdef USE_DEV_GPIOMEM
+        perror("Cannot close /dev/gpiomem");
+#else
+        perror("Cannot close /dev/mem");
+#endif
+        exit(1);
+    }
 }
