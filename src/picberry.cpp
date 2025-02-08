@@ -353,8 +353,8 @@ int main(int argc, char *argv[])
         pic->exit_program_mode();
         
         if(!log){
-            cout << "Press ENTER to exit program mode...";
-            fgetc(stdin);
+            // cout << "Press ENTER to exit program mode...";
+            // fgetc(stdin);
         }
         
         /* Free memory */

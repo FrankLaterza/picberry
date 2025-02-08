@@ -27,8 +27,8 @@
 
 /* delays (in microseconds; nanoseconds are rounded to 1us) */
 #define DELAY_P1   		1		// 200ns
-#define DELAY_P1A		4		// 80ns
-#define DELAY_P1B		4	 	// 80ns
+#define DELAY_P1A		2		// 80ns
+#define DELAY_P1B		2	 	// 80ns
 #define DELAY_P2		1		// 15ns
 #define DELAY_P3		1		// 15ns
 #define DELAY_P4		1		// 40ns
